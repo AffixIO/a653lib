@@ -30,6 +30,7 @@ endif()
 #
 
 option(A653LIB_BUILD_WASM "Build wasm guest partitions and runtime launchers" OFF)
+option(A653LIB_AFFIXIO "Verify ML-DSA-65 signed partition manifests before spawn (AffixIO, optional)" OFF)
 option(A653LIB_FETCH_C_ABI_LENS "Clone and build c-abi-lens automatically" ON)
 
 set(
@@ -279,6 +280,12 @@ target_include_directories(
     PRIVATE ${PRIVATE_INCLUDE_DIRS}
 )
 target_link_libraries(a653lib_partition_init PUBLIC a653lib)
+
+if(A653LIB_AFFIXIO)
+    add_subdirectory(a653_affixio)
+    target_link_libraries(a653lib PUBLIC a653lib_affixio)
+    target_compile_definitions(a653lib PRIVATE A653LIB_AFFIXIO)
+endif()
 
 #
 ### Main executable

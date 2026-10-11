@@ -45,6 +45,9 @@
 
 #include "a653_i_time_lib.h"
 #include "a653_i_sync.h"
+#ifdef A653LIB_AFFIXIO
+#include "a653_affixio.h"
+#endif
 
 #include "a653Init.h"
 
@@ -130,6 +133,19 @@ pid_t start_partition_process(char *p_name) {
         return -1;
     }
 
+#ifdef A653LIB_AFFIXIO
+    /* Optional load-time check (A653LIB_AFFIXIO=ON): every partition binary, and a .wasm guest,
+       must carry a manifest signed by the pinned ground key. Refusal is fatal, like a failed spawn. */
+    {
+      const char *reason = "unknown";
+      if (a653_affixio_check_spawn(argv, argc, &reason) != 0) {
+        printDebug(0,"ERROR: AffixIO verification refused %s (%s)\n", argv[0], reason);
+        free(argv[0]);
+        free(argv);
+        exit(1);
+      }
+    }
+#endif
     // Prozess spawnen (file_actions und attrp sind hier NULL für Standardeinstellungen)
     int status = posix_spawn(&pid, argv[0], NULL, NULL, argv, environ);
     free(argv[0]);

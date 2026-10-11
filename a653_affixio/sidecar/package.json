@@ -1,0 +1,10 @@
+{
+  "name": "a653-affixio-signer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Ground-side signer for a653lib partition manifests (AffixIO SDK). Never runs on target.",
+  "type": "module",
+  "license": "LGPL-2.1-or-later",
+  "engines": { "node": ">=20" },
+  "dependencies": { "affixio": "2.0.3" }
+}
